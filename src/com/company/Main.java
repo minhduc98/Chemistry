@@ -10,9 +10,9 @@ public class Main {
         //Test
         //
         ArrayList<Mass.ElementAnalyse> arr = mass.compressMolecule("CH3COONa");
-//        for (Mass.ElementAnalyse ea : arr) {
-//            System.out.println("Element is " + ea.Element + " valence is " + ea.Valence);
-//        }
+       for (Mass.ElementAnalyse ea : arr) {
+           System.out.println("Element is " + ea.Element + " valence is " + ea.Valence);
+       }
 
     }
 }
