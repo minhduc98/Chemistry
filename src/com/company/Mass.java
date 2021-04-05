@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Mass {
+class Mass {
     public class ElementAnalyse {
         String Element;
         int Valence;
@@ -87,16 +87,48 @@ public class Mass {
         ArrayList<ElementAnalyse> precompressedMolecule = analyzeMolecule(chemistryFormula);
         ArrayList<ElementAnalyse> compressedMolecule = new ArrayList<>();
 
-        HashSet<String> set = new HashSet<>();
+        LinkedHashSet<String> setElement = new LinkedHashSet<>();
         for (ElementAnalyse pm : precompressedMolecule) {
-            if (!set.contains(pm.Element)) {
-                set.add(pm.Element);
+            if (!setElement.contains(pm.Element)) {
+                setElement.add(pm.Element);
             }
         }
+        
 
-        List<String> newElements = set.stream().collect(Collectors.toList());
-        System.out.println(newElements);
+        List<String> newElements = setElement.stream().collect(Collectors.toList());
+        
+        for (String ne : newElements) {
+            int newValence = 0;
+            for (ElementAnalyse pm: precompressedMolecule) {
+                if (ne.equals(pm.Element)) {
+                    newValence = newValence + pm.Valence;
+                }
+            }
+            compressedMolecule.add(new ElementAnalyse(ne, newValence));
+        }
+        
         return compressedMolecule;
+    }
+    
+    public double findMoleculeMass(String chemistryFormula) {
+        ArrayList<ElementAnalyse> chemFormula = compressMolecule(chemistryFormula);
+        double mass = 0;
+        for (ElementAnalyse cf : chemFormula) {
+            mass += findAtomMass(cf.Element) * cf.Valence;
+        }
+        return mass;
+    }
+    
+    public double findProportion(String chemistryFormula1, String chemistryFormula2) {
+        double ratio;
+        double m1 = findMoleculeMass(chemistryFormula1);
+        if (chemistryFormula2.equals("Air")) {
+            ratio = m1 / 29;
+        } else {
+            double m2 = findMoleculeMass(chemistryFormula2);
+            ratio = m1/m2;
+        }
+        return ratio;
     }
 
 
