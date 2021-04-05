@@ -59,7 +59,7 @@ public class Mass {
         return mass;
     }
     
-    public double findProportion(String chemistryFormula1, String chemistryFormula2) {
+    public double findGasProportion(String chemistryFormula1, String chemistryFormula2) {
         double ratio;
         double m1 = findMoleculeMass(chemistryFormula1);
         if (chemistryFormula2.equals("Air")) {
