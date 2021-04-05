@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-class Mass {
+public class Mass {
     public class ElementAnalyse {
         String Element;
         int Valence;
