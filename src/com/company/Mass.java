@@ -1,8 +1,6 @@
 package com.company;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class Mass {
     Analysis analysis = new Analysis();
@@ -53,7 +51,7 @@ public class Mass {
     public double findMoleculeMass(String chemistryFormula) {
         ArrayList<Analysis.ElementAnalyse> chemFormula = analysis.compressMolecule(chemistryFormula);
         double mass = 0;
-        for (ElementAnalyse cf : chemFormula) {
+        for (Analysis.ElementAnalyse cf : chemFormula) {
             mass += findAtomMass(cf.Element) * cf.Valence;
         }
         return mass;
