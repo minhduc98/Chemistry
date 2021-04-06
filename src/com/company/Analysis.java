@@ -15,7 +15,7 @@ public class Analysis {
         }
     }
 
-    public ArrayList<ElementAnalyse> analyzeMolecule(String chemistryFormula) {
+    public ArrayList<ElementAnalyse> analyzeGroup(String chemistryFormula) {
         char[] chem = chemistryFormula.toCharArray();
         ArrayList<ElementAnalyse> elementAnalyses = new ArrayList<>();
         for (int i = 0; i < chem.length; i++) {
@@ -71,6 +71,118 @@ public class Analysis {
                 }
             }
         }
+        return elementAnalyses;
+    }
+    
+    public ArrayList<ElementAnalyse> analyzeBracket(char[] chem, int hasOpeningBracket, int hasClosingBracket, int hasOpeningSquareBracket, int hasClosingSquareBracket) {
+        ArrayList<ElementAnalyse> compoundWithBracket = new ArrayList<>();
+        ArrayList<ElementAnalyse> bracketPart = new ArrayList<>();
+        ArrayList<ElementAnalyse> notBracketPart = new ArrayList<>();
+        
+        // Create previous string part and bracket string part
+        String notBracketString = "";
+        String bracketString = "";
+        StringBuffer vb = new StringBuffer();
+        ArrayList<ElementAnalyse> bracketAnalyses = new ArrayList<>();
+        // Init bracket string
+        for (int i = hasOpeningBracket + 1; i < hasClosingBracket; i++ ) {
+            bracketString += chem[i];
+        }
+        for (int i = hasClosingBracket + 1; i < hasClosingSquareBracket; i++) {
+            if (Character.isUpperCase(chem[i])) {
+                break;
+            } else {
+                vb.append(chem[i]);
+            }
+        }
+        bracketPart = analyzeGroup(bracketString);
+        int valenceBracket = Integer.valueOf(vb.toString());
+            
+        for (ElementAnalyse bp: bracketPart) {
+            bp.Valence = bp.Valence * valenceBracket;
+        }
+        
+        if (hasOpeningBracket != -1 && hasOpeningBracket !=0) {
+            // Init notBracketString
+            for (int i = hasOpeningSquareBracket; i < hasOpeningBracket; i++) {
+                notBracketString += chem[i];
+            }
+            notBracketPart = analyzeGroup(notBracketString);
+                
+            compoundWithBracket.addAll(notBracketPart);
+            compoundWithBracket.addAll(bracketPart);
+        }
+            
+        if (hasOpeningBracket != -1 && hasOpeningBracket == 0) {
+            // Init notBracketString
+            for (int i = hasClosingBracket + 1; i < hasClosingSquareBracket; i++) {
+                if (Character.isDigit(chem[i]) && (i != hasClosingSquareBracket - 1)) continue;
+                else {
+                    notBracketString += chem[i];
+                }
+            }
+            notBracketPart = analyzeGroup(notBracketString);
+                
+            compoundWithBracket.addAll(bracketPart);
+            compoundWithBracket.addAll(notBracketPart);
+        }
+        
+        return compoundWithBracket;
+    }
+    
+    public ArrayList<ElementAnalyse> analyzeMolecule(String chemistryFormula) {
+        char[] chem = chemistryFormula.toCharArray();
+        ArrayList<ElementAnalyse> elementAnalyses = new ArrayList<>();
+        ArrayList<ElementAnalyse> complexPart = new ArrayList<>();
+        ArrayList<ElementAnalyse> notComplexPart = new ArrayList<>();
+        
+        // Init complex string
+        String notComplexString = "";
+        
+        // Find position of brackets
+        int hasOpeningBracket = chemistryFormula.indexOf('(');
+        int hasClosingBracket = chemistryFormula.indexOf(')');
+        int hasOpeningSquareBracket = chemistryFormula.indexOf('[');
+        int hasClosingSquareBracket = chemistryFormula.indexOf(']');
+    
+        
+        // Normal case
+        if (hasOpeningBracket == -1 && hasOpeningSquareBracket == -1) {
+            elementAnalyses = analyzeGroup(chemistryFormula);
+        }
+        
+        // Compound has only bracket
+        if (hasOpeningSquareBracket == -1) {
+            elementAnalyses = analyzeBracket(chem, hasOpeningBracket, hasClosingBracket, 0, chem.length);
+        } else {
+            // Complex Compound
+            complexPart = analyzeBracket(chem, hasOpeningBracket, hasClosingBracket, hasOpeningSquareBracket, hasClosingSquareBracket);
+            
+            if (hasOpeningSquareBracket != 0) {    
+                // Complex part is not the beginning => Not complex part is the beginning
+                for (int i = 0; i < hasOpeningSquareBracket; i++) {
+                    notComplexString += chem[i];
+                }
+                notComplexPart = analyzeGroup(notComplexString);
+                
+                elementAnalyses.addAll(notComplexPart);
+                elementAnalyses.addAll(complexPart);
+            } else {
+                // Complex part is the beginning => Not complex part is the remaining
+                for (int i = hasClosingSquareBracket + 1; i < chem.length; i++) {
+                    if (Character.isDigit(chem[i]) && (i != chem.length - 1)) continue;
+                    else {
+                        notComplexString += chem[i];
+                    }
+                }
+                notComplexPart = analyzeGroup(notComplexString);
+                
+                elementAnalyses.addAll(complexPart);
+                elementAnalyses.addAll(notComplexPart);
+            }
+        }
+        
+        
         return elementAnalyses;
     }
 
