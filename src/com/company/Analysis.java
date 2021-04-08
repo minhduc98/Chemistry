@@ -83,6 +83,7 @@ public class Analysis {
         String notBracketString = "";
         String bracketString = "";
         StringBuffer vb = new StringBuffer();
+        int valenceBracket = 0;
         ArrayList<ElementAnalyse> bracketAnalyses = new ArrayList<>();
         // Init bracket string
         for (int i = hasOpeningBracket + 1; i < hasClosingBracket; i++ ) {
@@ -96,7 +97,7 @@ public class Analysis {
             }
         }
         bracketPart = analyzeGroup(bracketString);
-        int valenceBracket = Integer.valueOf(vb.toString());
+        valenceBracket = Integer.valueOf(vb.toString());
             
         for (ElementAnalyse bp: bracketPart) {
             bp.Valence = bp.Valence * valenceBracket;
@@ -145,43 +146,43 @@ public class Analysis {
         int hasOpeningSquareBracket = chemistryFormula.indexOf('[');
         int hasClosingSquareBracket = chemistryFormula.indexOf(']');
     
-        
         // Normal case
-        if (hasOpeningBracket == -1 && hasOpeningSquareBracket == -1) {
-            elementAnalyses = analyzeGroup(chemistryFormula);
-        }
-        
-        // Compound has only bracket
-        if (hasOpeningSquareBracket == -1) {
-            elementAnalyses = analyzeBracket(chem, hasOpeningBracket, hasClosingBracket, 0, chem.length);
+        if (hasOpeningBracket == -1) {
+            if (hasOpeningSquareBracket ==  -1) {
+                elementAnalyses = analyzeGroup(chemistryFormula);
+            }
         } else {
-            // Complex Compound
-            complexPart = analyzeBracket(chem, hasOpeningBracket, hasClosingBracket, hasOpeningSquareBracket, hasClosingSquareBracket);
-            
-            if (hasOpeningSquareBracket != 0) {    
-                // Complex part is not the beginning => Not complex part is the beginning
-                for (int i = 0; i < hasOpeningSquareBracket; i++) {
-                    notComplexString += chem[i];
-                }
-                notComplexPart = analyzeGroup(notComplexString);
-                
-                elementAnalyses.addAll(notComplexPart);
-                elementAnalyses.addAll(complexPart);
+            // Compound has only bracket
+            if (hasOpeningSquareBracket == -1) {
+                elementAnalyses = analyzeBracket(chem, hasOpeningBracket, hasClosingBracket, 0, chem.length);
             } else {
-                // Complex part is the beginning => Not complex part is the remaining
-                for (int i = hasClosingSquareBracket + 1; i < chem.length; i++) {
-                    if (Character.isDigit(chem[i]) && (i != chem.length - 1)) continue;
-                    else {
+                // Complex Compound
+                complexPart = analyzeBracket(chem, hasOpeningBracket, hasClosingBracket, hasOpeningSquareBracket, hasClosingSquareBracket);
+                
+                if (hasOpeningSquareBracket != 0) {    
+                    // Complex part is not the beginning => Not complex part is the beginning
+                    for (int i = 0; i < hasOpeningSquareBracket; i++) {
                         notComplexString += chem[i];
                     }
+                    notComplexPart = analyzeGroup(notComplexString);
+                    
+                    elementAnalyses.addAll(notComplexPart);
+                    elementAnalyses.addAll(complexPart);
+                } else {
+                    // Complex part is the beginning => Not complex part is the remaining
+                    for (int i = hasClosingSquareBracket + 1; i < chem.length; i++) {
+                        if (Character.isDigit(chem[i]) && (i != chem.length - 1)) continue;
+                        else {
+                            notComplexString += chem[i];
+                        }
+                    }
+                    notComplexPart = analyzeGroup(notComplexString);
+                    
+                    elementAnalyses.addAll(complexPart);
+                    elementAnalyses.addAll(notComplexPart);
                 }
-                notComplexPart = analyzeGroup(notComplexString);
-                
-                elementAnalyses.addAll(complexPart);
-                elementAnalyses.addAll(notComplexPart);
             }
         }
-        
         
         return elementAnalyses;
     }
