@@ -18,6 +18,8 @@ public class Main
         
 // 		double v1 = mass.findVolumeWithMol(1, "273K", "1Pa", "m3");
 // 		System.out.println(v1);
+        Atom atom = new Atom();
+        Atom.StableAtom a = atom.findAtom("H");
 	}
 }
 
