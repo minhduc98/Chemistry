@@ -86,6 +86,33 @@ public class Atom {
         return electronStructure;
     }
 
+    public ElementGroup classifyAtom(String atomName) {
+        ElementGroup eg = new ElementGroup();
+        ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
+        ElectronClass lastElectronClass = electronStructureList.get(electronStructureList.size() - 1);
+        switch (lastElectronClass.className) {
+            case 's': 
+                eg.groupName = 'A';
+                switch (lastElectronClass.numElectron) {
+                    case 1: eg.numIndex = "I"; break;
+                    case 2: eg.numIndex = "II"; break;
+                }
+                break;
+            case 'p':
+                eg.groupName = 'A';
+                switch (lastElectronClass.numElectron) {
+                    case 1: eg.numIndex = "III"; break;
+                    case 2: eg.numIndex = "IV"; break;
+                    case 3: eg.numIndex = "V"; break;
+                    case 4: eg.numIndex = "VI"; break;
+                    case 5: eg.numIndex = "VII"; break;
+                    case 6: eg.numIndex = "VIII"; break;
+                }
+                break;
+        }
+        return eg;
+    }
+
     public QuantumNumber findLastElectronQuantumNumber(String atomName) {
         QuantumNumber lastElectronQuantumNumber = new QuantumNumber();
         int numElectron = findAtomIndex(atomName);
