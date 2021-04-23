@@ -25,6 +25,11 @@ public class Atom {
             this.numElectron = numElectron;
         }
     }
+
+    public class ElementGroup {
+        String numIndex; 
+        char groupName;
+    }
     
     public StableAtom findAtom(String atomName) {
         StableAtom sa = new StableAtom();
