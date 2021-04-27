@@ -1,6 +1,6 @@
 package com.company;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class Atom {
     public class StableAtom {
@@ -25,7 +25,7 @@ public class Atom {
             this.numElectron = numElectron;
         }
     }
-
+    
     public class ElementGroup {
         String numIndex; 
         char groupName;
@@ -52,6 +52,8 @@ public class Atom {
             case "N": atomIndex = 7; break;
             case "O": atomIndex = 8; break;
             case "F": atomIndex = 9; break;
+            case "Cr": atomIndex = 24; break;
+            case "Cu": atomIndex = 29; break;
         }
         return atomIndex;
     }
@@ -60,25 +62,56 @@ public class Atom {
         1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → 4d → 5p → 6s → 4f → 5d → 6p → 7s → 5f → 6d → 7p → 8s
      */
     public ArrayList<ElectronClass> findAtomElectronStructure(String atomName) {
-        ArrayList<ElectronClass> electronStructure = new ArrayList<>();
+        // Declare array list of electron class
+        ArrayList<ElectronClass> electronClassOrder = new ArrayList<>();
+        electronClassOrder.add(new ElectronClass(1, 's', 2));
+        electronClassOrder.add(new ElectronClass(2, 's', 2));
+        electronClassOrder.add(new ElectronClass(2, 'p', 6));
+        electronClassOrder.add(new ElectronClass(3, 's', 2));
+        electronClassOrder.add(new ElectronClass(3, 'p', 6));
+        electronClassOrder.add(new ElectronClass(4, 's', 2));
+        electronClassOrder.add(new ElectronClass(3, 'd', 10));
+        electronClassOrder.add(new ElectronClass(4, 'p', 6));
+        electronClassOrder.add(new ElectronClass(5, 's', 2));
+        electronClassOrder.add(new ElectronClass(4, 'd', 10));
+        electronClassOrder.add(new ElectronClass(5, 'p', 6));
+        electronClassOrder.add(new ElectronClass(6, 's', 2));
+        electronClassOrder.add(new ElectronClass(4, 'f', 14));
+        electronClassOrder.add(new ElectronClass(5, 'd', 10));
+        electronClassOrder.add(new ElectronClass(6, 'p', 6));
+        electronClassOrder.add(new ElectronClass(7, 's', 2));
+        electronClassOrder.add(new ElectronClass(5, 'f', 14));
+        electronClassOrder.add(new ElectronClass(6, 'd', 10));
+        electronClassOrder.add(new ElectronClass(7, 'p', 6));
+        electronClassOrder.add(new ElectronClass(8, 's', 2));
+        
+        // Find number of the atom's electrons
         int numElectron = findAtomIndex(atomName);
-        if (numElectron < 3) {  // 1s class
-            electronStructure.add(new ElectronClass(1, 's', numElectron));
-        } else {
-            electronStructure.add(new ElectronClass(1, 's', 2));
-            if (numElectron < 5) {  // 2s class
-                electronStructure.add(new ElectronClass(2, 's', numElectron - 2));
-            } else {
-                electronStructure.add(new ElectronClass(2, 's', 2));
-                if (numElectron < 11) {     // 2p class
-                    electronStructure.add(new ElectronClass(2, 'p', numElectron - 4));
-                } else {
-                    electronStructure.add(new ElectronClass(2, 'p', 6));
-                    // Will do in rest time
+        // The array list to contain the result
+        ArrayList<ElectronClass> result = new ArrayList<>();
+        // Start algorithm here
+        for (int i = 0; i < electronClassOrder.size(); i++) {
+            ElectronClass currentElectronClass = electronClassOrder.get(i);
+            if (numElectron <= currentElectronClass.numElectron) {
+                if (currentElectronClass.className == 'd' && currentElectronClass.index == 3) { // special case for 3d class
+                    if (numElectron == 4 || numElectron == 9) { // Case Cr and Cu
+                        ElectronClass sElectronClass = electronClassOrder.get(5);
+                        sElectronClass.numElectron = 1;
+                        result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron + 1));
+                        result.set(5, sElectronClass);
+                        break;
+                    }
+                    result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron));
+                    break;
                 }
+                result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron));
+                break;
+            } else {
+                result.add(currentElectronClass);
+                numElectron = numElectron - currentElectronClass.numElectron;
             }
         }
-        return electronStructure;
+        return result;
     }
 
     // will remove when build app in android
@@ -90,7 +123,7 @@ public class Atom {
         }
         return electronStructure;
     }
-
+    
     public ElementGroup classifyAtom(String atomName) {
         ElementGroup eg = new ElementGroup();
         ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
@@ -114,6 +147,14 @@ public class Atom {
                     case 6: eg.numIndex = "VIII"; break;
                 }
                 break;
+            /*case 'd':
+                eg.groupName = 'B';
+                ElectronClass lastElectronClass = electronStructureList.get(electronStructureList.size() - 1);
+                break;
+            case 'f':
+                eg.groupName = 'B';
+                eg.numIndex = "III";
+                break;*/
         }
         return eg;
     }
