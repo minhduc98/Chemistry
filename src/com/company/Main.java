@@ -20,7 +20,7 @@ public class Main
 // 		System.out.println(v1);
         Atom atom = new Atom();
         Atom.StableAtom a = atom.findAtom("H");
-        System.out.println(atom.displayAtomElectronStructure("Cu"));
+        System.out.println(atom.displayAtomElectronStructure("Lr"));
 	}
 }
 

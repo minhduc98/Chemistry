@@ -57,7 +57,26 @@ public class Atom {
             case "Mg": atomIndex = 12; break;
             case "Al": atomIndex = 13; break;
             case "Cr": atomIndex = 24; break;
+            case "Fe": atomIndex = 26; break;
             case "Cu": atomIndex = 29; break;
+            case "Nb": atomIndex = 41; break;
+            case "Mo": atomIndex = 42; break;
+            case "Ru": atomIndex = 44; break;
+            case "Rh": atomIndex = 45; break;
+            case "Pd": atomIndex = 46; break;
+            case "Ag": atomIndex = 47; break;
+            case "La": atomIndex = 57; break;
+            case "Ce": atomIndex = 58; break;
+            case "Gd": atomIndex = 64; break;
+            case "Pt": atomIndex = 78; break;
+            case "Au": atomIndex = 79; break;
+            case "Ac": atomIndex = 89; break;
+            case "Th": atomIndex = 90; break;
+            case "Pa": atomIndex = 91; break;
+            case "U": atomIndex = 92; break;
+            case "Np": atomIndex = 93; break;
+            case "Cm": atomIndex = 96; break;
+            case "Lr": atomIndex = 103; break;
         }
         return atomIndex;
     }
@@ -109,11 +128,69 @@ public class Atom {
                     break;
                 }
                 if (currentElectronClass.className == 'd' && currentElectronClass.index == 4) { // special case for 4d class
-                    if (numElectron == 4 || numElectron == 9) { // Case Cr and Cu
-                        ElectronClass sElectronClass = electronClassOrder.get(5);
+                    if (numElectron == 3 || numElectron == 4 || numElectron == 6 || numElectron == 7 || numElectron == 9) { // Case Nb, Mo, Ru, Rh, Ag
+                        ElectronClass sElectronClass = electronClassOrder.get(8);
                         sElectronClass.numElectron = 1;
                         result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron + 1));
-                        result.set(5, sElectronClass);
+                        result.set(8, sElectronClass);
+                        break;
+                    }
+                    if (numElectron == 8) { // Case Pd
+                        ElectronClass sElectronClass = electronClassOrder.get(8);
+                        sElectronClass.numElectron = 0;
+                        result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, 10));
+                        result.set(8, sElectronClass);
+                        break;
+                    }
+                    result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron));
+                    break;
+                }
+                if (currentElectronClass.className == 'f' && currentElectronClass.index == 4) { // special case for 4f class
+                    if (numElectron == 1 || numElectron == 2 || numElectron == 8) { // Case La, Ce, Gd
+                        ElectronClass dElectronClass = electronClassOrder.get(13);
+                        dElectronClass.numElectron = 1;
+                        result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron - 1));
+                        result.add(dElectronClass);
+                        break;
+                    }
+                    result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron));
+                    break;
+                }
+                if (currentElectronClass.className == 'd' && currentElectronClass.index == 5) { // special case for 5d class
+                    if (numElectron == 8 || numElectron == 9) { // Case Pt, Au
+                        ElectronClass sElectronClass = electronClassOrder.get(11);
+                        sElectronClass.numElectron = 1;
+                        result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron + 1));
+                        result.set(11, sElectronClass);
+                        break;
+                    }
+                    result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron));
+                    break;
+                }
+                if (currentElectronClass.className == 'f' && currentElectronClass.index == 5) { // special case for 5f class
+                    if (numElectron == 1 || numElectron == 2) { // Case Ac, Th
+                        ElectronClass dElectronClass = electronClassOrder.get(17);
+                        dElectronClass.numElectron = numElectron;
+                        result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, 0));
+                        result.add(dElectronClass);
+                        break;
+                    }
+                    if (numElectron == 3 || numElectron == 4 || numElectron == 5 || numElectron == 8) { // Case Pa, U, Np, Cm
+                        ElectronClass dElectronClass = electronClassOrder.get(17);
+                        dElectronClass.numElectron = 1;
+                        result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron - 1));
+                        result.add(dElectronClass);
+                        break;
+                    }
+                    result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron));
+                    break;
+                }
+                if (currentElectronClass.className == 'd' && currentElectronClass.index == 6) { // special case for 6d class
+                    if (numElectron == 1) { // Case Lr
+                        ElectronClass pElectronClass = electronClassOrder.get(18);
+                        pElectronClass.numElectron = 1;
+                        result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, 0));
+                        result.add(pElectronClass);
                         break;
                     }
                     result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron));
@@ -134,7 +211,7 @@ public class Atom {
         ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
         String electronStructure = "";
         for (ElectronClass ec: electronStructureList) {
-            electronStructure = electronStructure + ec.index + ec.className + ec.numElectron;
+            electronStructure = electronStructure + ec.index + ec.className + ec.numElectron + "-";
         }
         return electronStructure;
     }
