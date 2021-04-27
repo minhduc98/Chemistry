@@ -52,6 +52,10 @@ public class Atom {
             case "N": atomIndex = 7; break;
             case "O": atomIndex = 8; break;
             case "F": atomIndex = 9; break;
+            case "Ne": atomIndex = 10; break;
+            case "Na": atomIndex = 11; break;
+            case "Mg": atomIndex = 12; break;
+            case "Al": atomIndex = 13; break;
             case "Cr": atomIndex = 24; break;
             case "Cu": atomIndex = 29; break;
         }
@@ -94,6 +98,17 @@ public class Atom {
             ElectronClass currentElectronClass = electronClassOrder.get(i);
             if (numElectron <= currentElectronClass.numElectron) {
                 if (currentElectronClass.className == 'd' && currentElectronClass.index == 3) { // special case for 3d class
+                    if (numElectron == 4 || numElectron == 9) { // Case Cr and Cu
+                        ElectronClass sElectronClass = electronClassOrder.get(5);
+                        sElectronClass.numElectron = 1;
+                        result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron + 1));
+                        result.set(5, sElectronClass);
+                        break;
+                    }
+                    result.add(new ElectronClass(currentElectronClass.index, currentElectronClass.className, numElectron));
+                    break;
+                }
+                if (currentElectronClass.className == 'd' && currentElectronClass.index == 4) { // special case for 4d class
                     if (numElectron == 4 || numElectron == 9) { // Case Cr and Cu
                         ElectronClass sElectronClass = electronClassOrder.get(5);
                         sElectronClass.numElectron = 1;
