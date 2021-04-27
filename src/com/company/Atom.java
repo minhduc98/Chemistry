@@ -1,18 +1,12 @@
 package com.company;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Atom {
     public class StableAtom {
         int protonNum;
         int neutralNom;
-    }
-
-    public class QuantumNumber {
-        int n;      // Principal quantum number
-        int l;      // Azimuthal quantum number
-        int ml;     // Magnetic quantum number
-        double ms;     // Spin quantum number
     }
 
     public class ElectronClass {
@@ -29,6 +23,8 @@ public class Atom {
     public class ElementGroup {
         String numIndex; 
         char groupName;
+        boolean isLantanoid = false;
+        boolean isActinide = false;
     }
     
     public StableAtom findAtom(String atomName) {
@@ -220,40 +216,97 @@ public class Atom {
         ElementGroup eg = new ElementGroup();
         ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
         ElectronClass lastElectronClass = electronStructureList.get(electronStructureList.size() - 1);
-        switch (lastElectronClass.className) {
-            case 's': 
-                eg.groupName = 'A';
-                switch (lastElectronClass.numElectron) {
-                    case 1: eg.numIndex = "I"; break;
-                    case 2: eg.numIndex = "II"; break;
-                }
-                break;
-            case 'p':
-                eg.groupName = 'A';
-                switch (lastElectronClass.numElectron) {
-                    case 1: eg.numIndex = "III"; break;
-                    case 2: eg.numIndex = "IV"; break;
-                    case 3: eg.numIndex = "V"; break;
-                    case 4: eg.numIndex = "VI"; break;
-                    case 5: eg.numIndex = "VII"; break;
-                    case 6: eg.numIndex = "VIII"; break;
-                }
-                break;
-            /*case 'd':
-                eg.groupName = 'B';
-                ElectronClass lastElectronClass = electronStructureList.get(electronStructureList.size() - 1);
-                break;
-            case 'f':
-                eg.groupName = 'B';
-                eg.numIndex = "III";
-                break;*/
+        int numElectron = findAtomIndex(atomName);
+        if (numElectron > 56 && numElectron < 71) {
+            eg.groupName = 'B';
+            eg.numIndex = "III";
+            eg.isLantanoid = true;
+        } else if (numElectron > 88 && numElectron < 103) {
+            eg.groupName = 'B';
+            eg.numIndex = "III";
+            eg.isActinide = true;
+        } else {
+            switch (lastElectronClass.className) {
+                case 's':
+                    eg.groupName = 'A';
+                    switch (lastElectronClass.numElectron) {
+                        case 1:
+                            eg.numIndex = "I";
+                            break;
+                        case 2:
+                            eg.numIndex = "II";
+                            break;
+                    }
+                    break;
+                case 'p':
+                    eg.groupName = 'A';
+                    switch (lastElectronClass.numElectron) {
+                        case 1:
+                            eg.numIndex = "III";
+                            break;
+                        case 2:
+                            eg.numIndex = "IV";
+                            break;
+                        case 3:
+                            eg.numIndex = "V";
+                            break;
+                        case 4:
+                            eg.numIndex = "VI";
+                            break;
+                        case 5:
+                            eg.numIndex = "VII";
+                            break;
+                        case 6:
+                            eg.numIndex = "VIII";
+                            break;
+                    }
+                    break;
+                case 'd':
+                    eg.groupName = 'B';
+                    int sIndex = IntStream.range(0, electronStructureList.size())
+                            .filter(i -> electronStructureList.get(i).className == 's')
+                            .filter(i -> electronStructureList.get(i).index == lastElectronClass.index + 1)
+                            .findFirst().orElse(-1);
+                    ElectronClass sElectronClass = electronStructureList.get(sIndex);
+                    int sumValenceElectron = sElectronClass.numElectron + lastElectronClass.numElectron;
+                    switch (sumValenceElectron) {
+                        case 3:
+                            eg.numIndex = "III";
+                            break;
+                        case 4:
+                            eg.numIndex = "IV";
+                            break;
+                        case 5:
+                            eg.numIndex = "V";
+                            break;
+                        case 6:
+                            eg.numIndex = "VI";
+                            break;
+                        case 7:
+                            eg.numIndex = "VII";
+                            break;
+                        case 8:
+                        case 9:
+                        case 10:
+                            eg.numIndex = "VIII";
+                            break;
+                        case 11:
+                            eg.numIndex = "I";
+                            break;
+                        case 12:
+                            eg.numIndex = "II";
+                            break;
+                    }
+                    break;
+            }
         }
         return eg;
     }
 
-    public QuantumNumber findLastElectronQuantumNumber(String atomName) {
-        QuantumNumber lastElectronQuantumNumber = new QuantumNumber();
-        int numElectron = findAtomIndex(atomName);
-        return lastElectronQuantumNumber;
+    public String displayAtomGroup(String atomName) {
+        ElementGroup eg = classifyAtom(atomName);
+        if (!eg.isLantanoid && !eg.isActinide) return eg.numIndex + eg.groupName;
+        else if (eg.isLantanoid) return eg.numIndex + eg.groupName + "and is lantanoid";
+        else return eg.numIndex + eg.groupName + "and is actinide";
     }
 }

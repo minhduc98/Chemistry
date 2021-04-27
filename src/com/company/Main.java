@@ -13,14 +13,16 @@ public class Main
 // 		}
         // double m = mass.findGasProportion("H2O", "H2");
         // System.out.println(m);
-        double m = mass.findMassWithMol("K2[Fe(CN)4]", 0.1);
-        System.out.println(m);
+//        double m = mass.findMassWithMol("K2[Fe(CN)4]", 0.1);
+//        System.out.println(m);
         
 // 		double v1 = mass.findVolumeWithMol(1, "273K", "1Pa", "m3");
 // 		System.out.println(v1);
         Atom atom = new Atom();
-        Atom.StableAtom a = atom.findAtom("H");
-        System.out.println(atom.displayAtomElectronStructure("Lr"));
+//        Atom.StableAtom a = atom.findAtom("H");
+//        System.out.println(atom.displayAtomElectronStructure("Lr"));
+//        atom.classifyAtom("Cu");
+		System.out.println(atom.displayAtomGroup("B"));
 	}
 }
 
