@@ -249,11 +249,11 @@ public class Atom {
         ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
         ElectronClass lastElectronClass = electronStructureList.get(electronStructureList.size() - 1);
         int numElectron = findAtomIndex(atomName);
-        if (numElectron > 56 && numElectron < 71) {
+        if (numElectron > 56 && numElectron < 72) {
             eg.groupName = 'B';
             eg.numIndex = "III";
             eg.isLantanoid = true;
-        } else if (numElectron > 88 && numElectron < 103) {
+        } else if (numElectron > 88 && numElectron < 104) {
             eg.groupName = 'B';
             eg.numIndex = "III";
             eg.isActinide = true;
@@ -335,6 +335,7 @@ public class Atom {
         return eg;
     }
 
+    // will remove when build app in android
     public String displayAtomGroup(String atomName) {
         ElementGroup eg = classifyAtom(atomName);
         if (!eg.isLantanoid && !eg.isActinide) return eg.numIndex + eg.groupName;
