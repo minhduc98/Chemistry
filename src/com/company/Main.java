@@ -20,9 +20,10 @@ public class Main
 // 		System.out.println(v1);
         Atom atom = new Atom();
 //        Atom.StableAtom a = atom.findAtom("H");
-//        System.out.println(atom.displayAtomElectronStructure("Lr"));
+//		System.out.println(atom.displayAtomElectronStructure("Rn"));
+//        System.out.println(atom.displayCompactAtomElectronStructure("Ac"));
 //        atom.classifyAtom("Cu");
-		System.out.println(atom.displayAtomGroup("B"));
+		System.out.println(atom.displayAtomGroup("Au"));
 	}
 }
 

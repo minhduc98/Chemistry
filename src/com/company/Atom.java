@@ -4,6 +4,10 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class Atom {
+    // Define constant
+    final double protonMass = 1.0073;
+    final double neutralMass = 1.0087;
+
     public class StableAtom {
         int protonNum;
         int neutralNom;
@@ -21,8 +25,9 @@ public class Atom {
     }
     
     public class ElementGroup {
-        String numIndex; 
+        String groupIndex; 
         char groupName;
+        int periodIndex;
         boolean isLantanoid = false;
         boolean isActinide = false;
     }
@@ -234,14 +239,58 @@ public class Atom {
         return result;
     }
 
+    public ArrayList<ElectronClass> sortElectronStructure(String atomName) {
+        ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
+        electronStructureList.sort(Comparator.comparingInt(e -> e.index));
+        return electronStructureList;
+    }
+
     // will remove when build app in android
     public String displayAtomElectronStructure(String atomName) {
-        ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
+        ArrayList<ElectronClass> electronStructureList = sortElectronStructure(atomName);
         String electronStructure = "";
         for (ElectronClass ec: electronStructureList) {
-            electronStructure = electronStructure + ec.index + ec.className + ec.numElectron + "-";
+            electronStructure = electronStructure + ec.index + ec.className + ec.numElectron;
         }
         return electronStructure;
+    }
+
+    // will remove when build app in android
+    public String displayCompactAtomElectronStructure(String atomName) {
+        String fullAtomElectronStructure = displayAtomElectronStructure(atomName);
+        String compactString = "";
+        int numElectron = findAtomIndex(atomName);
+        if (numElectron > 1 && numElectron <= 10) {      // He
+            compactString = fullAtomElectronStructure.replace("1s2", "[He]");
+        }
+        if (numElectron > 10 && numElectron <= 18) {     // Ne
+            compactString = fullAtomElectronStructure.replace("1s22s22p6", "[Ne]");
+        }
+        if (numElectron > 18 && numElectron <= 36) {     // Ar
+            compactString = fullAtomElectronStructure.replace("1s22s22p63s23p6", "[Ar]");
+        }
+        if (numElectron > 36 && numElectron <= 54) {     // Kr
+            compactString = fullAtomElectronStructure.replace("1s22s22p63s23p63d104s24p6", "[Kr]");
+        }
+        if (numElectron > 54 && numElectron <= 86) {     // Xe
+            if (fullAtomElectronStructure.contains("1s22s22p63s23p63d104s24p64d105s25p6")) {
+                compactString = fullAtomElectronStructure.replace("1s22s22p63s23p63d104s24p64d105s25p6", "[Xe]");
+            } else {
+                compactString = fullAtomElectronStructure.replace("1s22s22p63s23p63d104s24p64d10", "");
+                compactString = compactString.replace("5s25p6", "");
+                compactString = "[Xe]" + compactString;
+            }
+        }
+        if (numElectron > 86) {     // Rn
+            if (fullAtomElectronStructure.contains("1s22s22p63s23p63d104s24p64d104f145s25p65d106s26p6")) {
+                compactString = fullAtomElectronStructure.replace("1s22s22p63s23p63d104s24p64d105s25p6", "[Rn]");
+            } else {
+                compactString = fullAtomElectronStructure.replace("1s22s22p63s23p63d104s24p64d104f145s25p65d10", "");
+                compactString = compactString.replace("6s26p6", "");
+                compactString = "[Rn]" + compactString;
+            }
+        }
+        return compactString;
     }
     
     public ElementGroup classifyAtom(String atomName) {
@@ -251,22 +300,25 @@ public class Atom {
         int numElectron = findAtomIndex(atomName);
         if (numElectron > 56 && numElectron < 72) {
             eg.groupName = 'B';
-            eg.numIndex = "III";
+            eg.groupIndex = "III";
             eg.isLantanoid = true;
+            eg.periodIndex = 6;
         } else if (numElectron > 88 && numElectron < 104) {
             eg.groupName = 'B';
-            eg.numIndex = "III";
+            eg.groupIndex = "III";
             eg.isActinide = true;
+            eg.periodIndex = 7;
         } else {
+            eg.periodIndex = sortElectronStructure(atomName).get(electronStructureList.size() - 1).index;
             switch (lastElectronClass.className) {
                 case 's':
                     eg.groupName = 'A';
                     switch (lastElectronClass.numElectron) {
                         case 1:
-                            eg.numIndex = "I";
+                            eg.groupIndex = "I";
                             break;
                         case 2:
-                            eg.numIndex = "II";
+                            eg.groupIndex = "II";
                             break;
                     }
                     break;
@@ -274,22 +326,22 @@ public class Atom {
                     eg.groupName = 'A';
                     switch (lastElectronClass.numElectron) {
                         case 1:
-                            eg.numIndex = "III";
+                            eg.groupIndex = "III";
                             break;
                         case 2:
-                            eg.numIndex = "IV";
+                            eg.groupIndex = "IV";
                             break;
                         case 3:
-                            eg.numIndex = "V";
+                            eg.groupIndex = "V";
                             break;
                         case 4:
-                            eg.numIndex = "VI";
+                            eg.groupIndex = "VI";
                             break;
                         case 5:
-                            eg.numIndex = "VII";
+                            eg.groupIndex = "VII";
                             break;
                         case 6:
-                            eg.numIndex = "VIII";
+                            eg.groupIndex = "VIII";
                             break;
                     }
                     break;
@@ -303,30 +355,30 @@ public class Atom {
                     int sumValenceElectron = sElectronClass.numElectron + lastElectronClass.numElectron;
                     switch (sumValenceElectron) {
                         case 3:
-                            eg.numIndex = "III";
+                            eg.groupIndex = "III";
                             break;
                         case 4:
-                            eg.numIndex = "IV";
+                            eg.groupIndex = "IV";
                             break;
                         case 5:
-                            eg.numIndex = "V";
+                            eg.groupIndex = "V";
                             break;
                         case 6:
-                            eg.numIndex = "VI";
+                            eg.groupIndex = "VI";
                             break;
                         case 7:
-                            eg.numIndex = "VII";
+                            eg.groupIndex = "VII";
                             break;
                         case 8:
                         case 9:
                         case 10:
-                            eg.numIndex = "VIII";
+                            eg.groupIndex = "VIII";
                             break;
                         case 11:
-                            eg.numIndex = "I";
+                            eg.groupIndex = "I";
                             break;
                         case 12:
-                            eg.numIndex = "II";
+                            eg.groupIndex = "II";
                             break;
                     }
                     break;
@@ -338,8 +390,8 @@ public class Atom {
     // will remove when build app in android
     public String displayAtomGroup(String atomName) {
         ElementGroup eg = classifyAtom(atomName);
-        if (!eg.isLantanoid && !eg.isActinide) return eg.numIndex + eg.groupName;
-        else if (eg.isLantanoid) return eg.numIndex + eg.groupName + "and is lantanoid";
-        else return eg.numIndex + eg.groupName + "and is actinide";
+        if (!eg.isLantanoid && !eg.isActinide) return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName;
+        else if (eg.isLantanoid) return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName + " and is lantanoid";
+        else return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName + " and is actinide";
     }
 }
