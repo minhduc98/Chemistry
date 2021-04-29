@@ -421,4 +421,38 @@ public class Atom {
         }
         return Math.round(atomMass * 10000.0) / 10000.0;
     }
+
+    public String classifyAtom(String atomicSymbol) {
+        ElementGroup eg = findAtomPosition(atomicSymbol);
+        String type = "";
+        switch (eg.groupName) {
+            case 'B': type = "metal"; break;
+            case 'A':
+                int numElectron = findAtomIndex(atomicSymbol);
+                switch (numElectron) {
+                    case 5:     // B
+                    case 14:    // Si
+                    case 32:    // Ge
+                    case 33:    // As
+                    case 52:    // Te
+                        type = "metalloid"; break;
+                    default: type = "nonmetal"; break;
+                }
+                break;
+        }
+        return type;
+    }
+
+    /* Positive: Metal ; Negative: Non-metal; High index: Strong metal; Low index: Strong non-metal */
+    public int rateAtomStrength(String atomicSymbol) {
+        ElementGroup eg = findAtomPosition(atomicSymbol);
+        int rating = 0;
+        String atomType = classifyAtom(atomicSymbol);
+        switch (atomType) {
+            case "metal": break;
+            default:
+                break;
+        }
+        return rating;
+    }
 }
