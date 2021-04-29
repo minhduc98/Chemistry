@@ -24,6 +24,7 @@ public class Main
 //        System.out.println(atom.displayCompactAtomElectronStructure("Ac"));
 //        atom.classifyAtom("Cu");
 		System.out.println(atom.displayAtomPosition("Au"));
+		System.out.println(atom.findAtomMass("H"));
 	}
 }
 

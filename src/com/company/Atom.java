@@ -10,7 +10,13 @@ public class Atom {
 
     public class StableAtom {
         int protonNum;
-        int neutralNom;
+        int neutralNum;
+        double massPercentage;
+        StableAtom(int protonNum, int neutralNum, double massPercentage) {
+            this.protonNum = protonNum;
+            this.neutralNum = neutralNum;
+            this.massPercentage = massPercentage;
+        }
     }
 
     public class ElectronClass {
@@ -32,18 +38,20 @@ public class Atom {
         boolean isActinide = false;
     }
     
-    public StableAtom findAtom(String atomName) {
-        StableAtom sa = new StableAtom();
-        switch (atomName) {
-            case "H": sa.protonNum = 1; sa.neutralNom = 1; break;
-            case "Li": sa.protonNum = 3; sa.neutralNom = 4; break;
+    public ArrayList<StableAtom> findStableAtom(String atomicSymbol) {
+        ArrayList<StableAtom> isotopes = new ArrayList<>();
+        switch (atomicSymbol) {
+            case "H":
+                isotopes.add(new StableAtom(1, 0, 99.99));
+                isotopes.add(new StableAtom(1, 1, 0.01));
+                break;
         }
-        return sa;
+        return isotopes;
     }
 
-    public int findAtomIndex(String atomName) {
+    public int findAtomIndex(String atomicSymbol) {
         int atomIndex = 0;
-        switch (atomName) {
+        switch (atomicSymbol) {
             case "H": atomIndex = 1; break;
             case "He": atomIndex = 2; break;
             case "Li": atomIndex = 3; break;
@@ -113,11 +121,21 @@ public class Atom {
         }
         return atomIndex;
     }
+
+    public String findAtomName(String atomicSymbol) {
+        String atomName = "";
+        switch (atomicSymbol) {
+            case "H": atomName = "Hydrogen"; break;
+            case "He": atomName = "Helium"; break;
+        }
+        return atomName;
+    }
+
     /*
         s: 2; p: 6; d: 10; f: 14
         1s → 2s → 2p → 3s → 3p → 4s → 3d → 4p → 5s → 4d → 5p → 6s → 4f → 5d → 6p → 7s → 5f → 6d → 7p → 8s
      */
-    public ArrayList<ElectronClass> findAtomElectronStructure(String atomName) {
+    public ArrayList<ElectronClass> findAtomElectronStructure(String atomicSymbol) {
         // Declare array list of electron class
         ArrayList<ElectronClass> electronClassOrder = new ArrayList<>();
         electronClassOrder.add(new ElectronClass(1, 's', 2));
@@ -142,7 +160,7 @@ public class Atom {
         electronClassOrder.add(new ElectronClass(8, 's', 2));
         
         // Find number of the atom's electrons
-        int numElectron = findAtomIndex(atomName);
+        int numElectron = findAtomIndex(atomicSymbol);
         // The array list to contain the result
         ArrayList<ElectronClass> result = new ArrayList<>();
         // Start algorithm here
@@ -239,15 +257,15 @@ public class Atom {
         return result;
     }
 
-    public ArrayList<ElectronClass> sortElectronStructure(String atomName) {
-        ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
+    public ArrayList<ElectronClass> sortElectronStructure(String atomicSymbol) {
+        ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomicSymbol);
         electronStructureList.sort(Comparator.comparingInt(e -> e.index));
         return electronStructureList;
     }
 
     // will remove when build app in android
-    public String displayAtomElectronStructure(String atomName) {
-        ArrayList<ElectronClass> electronStructureList = sortElectronStructure(atomName);
+    public String displayAtomElectronStructure(String atomicSymbol) {
+        ArrayList<ElectronClass> electronStructureList = sortElectronStructure(atomicSymbol);
         String electronStructure = "";
         for (ElectronClass ec: electronStructureList) {
             electronStructure = electronStructure + ec.index + ec.className + ec.numElectron;
@@ -256,10 +274,10 @@ public class Atom {
     }
 
     // will remove when build app in android
-    public String displayCompactAtomElectronStructure(String atomName) {
-        String fullAtomElectronStructure = displayAtomElectronStructure(atomName);
+    public String displayCompactAtomElectronStructure(String atomicSymbol) {
+        String fullAtomElectronStructure = displayAtomElectronStructure(atomicSymbol);
         String compactString = "";
-        int numElectron = findAtomIndex(atomName);
+        int numElectron = findAtomIndex(atomicSymbol);
         if (numElectron > 1 && numElectron <= 10) {      // He
             compactString = fullAtomElectronStructure.replace("1s2", "[He]");
         }
@@ -293,11 +311,11 @@ public class Atom {
         return compactString;
     }
     
-    public ElementGroup findAtomPosition(String atomName) {
+    public ElementGroup findAtomPosition(String atomicSymbol) {
         ElementGroup eg = new ElementGroup();
-        ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
+        ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomicSymbol);
         ElectronClass lastElectronClass = electronStructureList.get(electronStructureList.size() - 1);
-        int numElectron = findAtomIndex(atomName);
+        int numElectron = findAtomIndex(atomicSymbol);
         if (numElectron > 56 && numElectron < 72) {
             eg.groupName = 'B';
             eg.groupIndex = "III";
@@ -309,7 +327,7 @@ public class Atom {
             eg.isActinide = true;
             eg.periodIndex = 7;
         } else {
-            eg.periodIndex = sortElectronStructure(atomName).get(electronStructureList.size() - 1).index;
+            eg.periodIndex = sortElectronStructure(atomicSymbol).get(electronStructureList.size() - 1).index;
             switch (lastElectronClass.className) {
                 case 's':
                     eg.groupName = 'A';
@@ -388,10 +406,19 @@ public class Atom {
     }
 
     // will remove when build app in android
-    public String displayAtomPosition(String atomName) {
-        ElementGroup eg = findAtomPosition(atomName);
+    public String displayAtomPosition(String atomicSymbol) {
+        ElementGroup eg = findAtomPosition(atomicSymbol);
         if (!eg.isLantanoid && !eg.isActinide) return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName;
         else if (eg.isLantanoid) return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName + " and is lantanoid";
         else return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName + " and is actinide";
+    }
+
+    public double findAtomMass(String atomicSymbol) {
+        double atomMass = 0;
+        ArrayList<StableAtom> isotopes = findStableAtom(atomicSymbol);
+        for (StableAtom sa: isotopes) {
+            atomMass = atomMass + (sa.protonNum * protonMass + sa.neutralNum * neutralMass) * sa.massPercentage / 100;
+        }
+        return Math.round(atomMass * 10000.0) / 10000.0;
     }
 }
