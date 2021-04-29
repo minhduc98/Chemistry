@@ -293,7 +293,7 @@ public class Atom {
         return compactString;
     }
     
-    public ElementGroup classifyAtom(String atomName) {
+    public ElementGroup findAtomPosition(String atomName) {
         ElementGroup eg = new ElementGroup();
         ArrayList<ElectronClass> electronStructureList = findAtomElectronStructure(atomName);
         ElectronClass lastElectronClass = electronStructureList.get(electronStructureList.size() - 1);
@@ -388,8 +388,8 @@ public class Atom {
     }
 
     // will remove when build app in android
-    public String displayAtomGroup(String atomName) {
-        ElementGroup eg = classifyAtom(atomName);
+    public String displayAtomPosition(String atomName) {
+        ElementGroup eg = findAtomPosition(atomName);
         if (!eg.isLantanoid && !eg.isActinide) return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName;
         else if (eg.isLantanoid) return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName + " and is lantanoid";
         else return "Period is " + eg.periodIndex + ". Group name is " + eg.groupIndex + eg.groupName + " and is actinide";

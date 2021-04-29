@@ -23,7 +23,7 @@ public class Main
 //		System.out.println(atom.displayAtomElectronStructure("Rn"));
 //        System.out.println(atom.displayCompactAtomElectronStructure("Ac"));
 //        atom.classifyAtom("Cu");
-		System.out.println(atom.displayAtomGroup("Au"));
+		System.out.println(atom.displayAtomPosition("Au"));
 	}
 }
 
