@@ -1,11 +1,9 @@
 package com.company;
 
-import java.util.ArrayList;
+public class Main {
 
-public class Main
-{
-	public static void main(String[] args) {
-		Mass mass = new Mass();
+    public static void main(String[] args) {
+        Mass mass = new Mass();
 // 	    Analysis analysis = new Analysis();
 // 		ArrayList<Analysis.ElementAnalyse> arr = analysis.compressMolecule("CH3COONa");
 //         for (Analysis.ElementAnalyse ea : arr) {
@@ -15,7 +13,7 @@ public class Main
         // System.out.println(m);
 //        double m = mass.findMassWithMol("K2[Fe(CN)4]", 0.1);
 //        System.out.println(m);
-        
+
 // 		double v1 = mass.findVolumeWithMol(1, "273K", "1Pa", "m3");
 // 		System.out.println(v1);
         Atom atom = new Atom();
@@ -25,7 +23,6 @@ public class Main
 //        atom.classifyAtom("Cu");
 //		System.out.println(atom.displayAtomPosition("Au"));
 //		System.out.println(atom.findAtomMass("H"));
-		System.out.println(atom.classifyAtom("Cu"));
-	}
+        System.out.println(atom.classifyAtom("Cu"));
+    }
 }
-
