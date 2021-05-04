@@ -23,6 +23,8 @@ public class Main {
 //        atom.classifyAtom("Cu");
 //		System.out.println(atom.displayAtomPosition("Au"));
 //		System.out.println(atom.findAtomMass("H"));
-        System.out.println(atom.classifyAtom("Cu"));
+        System.out.println(atom.classifyAtom("Li"));
+        Molecule molecule = new Molecule();
+        System.out.println(molecule.rawClassifyMolecule("NaNH2"));
     }
 }

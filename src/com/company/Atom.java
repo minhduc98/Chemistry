@@ -429,14 +429,12 @@ public class Atom {
             case 'B': type = "metal"; break;
             case 'A':
                 int numElectron = findAtomIndex(atomicSymbol);
-                switch (numElectron) {
-                    case 5:     // B
-                    case 14:    // Si
-                    case 32:    // Ge
-                    case 33:    // As
-                    case 52:    // Te
-                        type = "metalloid"; break;
-                    default: type = "nonmetal"; break;
+                if (numElectron == 5 || numElectron == 14 ||numElectron == 32 || numElectron == 33 || numElectron == 52) {  // B, Si, Ge, As, Te
+                    type = "metalloid";
+                } else {
+                   if ((eg.groupIndex.equals("I") && numElectron != 1) || eg.groupIndex.equals("II") || eg.groupIndex.equals("III")
+                           || numElectron == 50 || numElectron == 82 || numElectron == 83 || numElectron == 84 ) type = "metal";    // Sn, Pb, Bi, Po
+                   else type = "nonmetal";
                 }
                 break;
         }
