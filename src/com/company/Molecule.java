@@ -23,30 +23,39 @@ public class Molecule {
         return moleculeBondType;
     }
 
-    public String classifyCovalentMolecule(String chemistryFormula) {
+    public String classifyCovalentInorganicMolecule(String chemistryFormula) {
         ArrayList<Analysis.ElementAnalyse> analysedMolecule = analysis.compressMolecule(chemistryFormula);
+        String inorganicMoleculeType = "";
         String firstElement = analysedMolecule.get(0).Element;
+        String lastElement = analysedMolecule.get(analysedMolecule.size()-1).Element;
         if (firstElement.equals("H")) {
             if (!chemistryFormula.equals("H2O")) {
-                return "acid";
+                inorganicMoleculeType = "inorganic-acid";
             } else {
-                return "neutral-oxid";
+                inorganicMoleculeType = "neutral-oxid";
             }
         } else {
             if (analysedMolecule.size() == 2) {
-                if (analysedMolecule.get(1).Element.equals("O")) {
-                    return "acid-oxid";
+                switch (lastElement) {
+                    case "F":
+                    case "Cl":
+                    case "Br":
+                    case "I":
+                        inorganicMoleculeType = "covalent-halogenua"; break;
+                    case "O": inorganicMoleculeType = "acid-oxid"; break;
+                    case "H":
+                        switch (firstElement) {
+                            case "B":
+                            case "Si":
+                                inorganicMoleculeType = "inorganic-acid"; break;
+                            case "N": inorganicMoleculeType = "inorganic-base"; break;
+                        }
+                        break;
                 }
-                if (analysedMolecule.get(1).Element.equals("H")) {
-                    switch (firstElement) {
-                        case "C": return "hydrocarbon"; break;
-                        case "B": return "borane"; break;
-                        case "Si": return "silane"; break;
-                    }
-                }
-                if (atom.findAtomPosition(analysedMolecule.get(1).Element).groupIndex.equals("VII")) return "covalent-halogenua";
-                if (chemistryFormula.equals("NH3")) return "base";
+            } else {
+                if (chemistryFormula.contains("NH4") || chemistryFormula.contains("NH3OH")) inorganicMoleculeType = "salt";
             }
         }
+        return inorganicMoleculeType;
     }
 }
